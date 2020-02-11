@@ -5,12 +5,7 @@ const {
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-    mode: "development",
     entry: "./src/index.tsx",
-    devtool: 'inline-source-map',
-    devServer: {
-        contentBase: './dist',
-    },
     module: {
         rules: [{
             test: /\.tsx?$/,
@@ -19,7 +14,7 @@ module.exports = {
         }]
     },
     plugins: [new CleanWebpackPlugin(), new HtmlWebpackPlugin({
-        title: 'Demo Tiles App New',
+        title: 'Demo Tiles App',
         template: './index.html'
     })],
     resolve: {

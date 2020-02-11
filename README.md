@@ -14,17 +14,17 @@ Task for frontend
 
 ## Main Tasks
 
-[ ] Add layout for the page.
+- [ ] Add layout for the page.
 
-[ ] Design Components for listing the memos
+- [ ] Design Components for listing the memos
 
-[ ] Create Functionality
+- [ ] Create Functionality
 
-[ ] Delete Functionality
+- [ ] Delete Functionality
 
-[ ] Update
+- [ ] Update
 
-[ ] UX Handling for intricasies
+- [ ] UX Handling for intricasies
 
 ## Optimizations
 

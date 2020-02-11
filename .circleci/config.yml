@@ -2,7 +2,7 @@ version: 2.1
 parameters:
     app-name: tiles-map
 orbs:
-    deploy-to-heroku: betterdoc/deploy-to-heroku@4.1.0
+    deploy-to-heroku: rise/deploy-to-heroku@0.0.6
 defaults: &defaults
     working_directory: ~/demo-tiles
     docker:
@@ -46,7 +46,8 @@ jobs:
         steps:
             - attach_workspace:
                   at: ~/demo-tiles
-            - deploy-to-heroku/docker-build-release --app-name=tiles-map
+            - deploy-to-heroku/docker-build-release
+                  app-name: tiles-map
 
 workflows:
     version: 2.1

@@ -55,10 +55,3 @@ workflows:
                 requires:
                     - check_lint_and_test
             
-            - publish_version:
-                  filters:
-                      branches:
-                          only:
-                              - next
-                  requires:
-                      - check_lint_and_test

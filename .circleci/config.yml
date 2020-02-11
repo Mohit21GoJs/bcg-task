@@ -1,4 +1,6 @@
 version: 2.1
+orbs:
+    heroku: circleci/heroku@0.0.10. # Invoke the Heroku orb
 defaults: &defaults
     working_directory: ~/demo-tiles
     docker:
@@ -10,17 +12,17 @@ jobs:
             - checkout
             # Download and cache dependencies
             - restore_cache:
-                keys:
-                    - v1-dependencies-{{ checksum "package.json" }}
-                    # fallback to using the latest cache if no exact match is found
-                    - v1-dependencies-
+                  keys:
+                      - v1-dependencies-{{ checksum "package.json" }}
+                      # fallback to using the latest cache if no exact match is found
+                      - v1-dependencies-
             - run:
                   name: Install dependcies
                   command: yarn install
             - save_cache:
-                paths:
-                    - node_modules
-                key: v1-dependencies-{{ checksum "package.json" }}
+                  paths:
+                      - node_modules
+                  key: v1-dependencies-{{ checksum "package.json" }}
             - run:
                   name: Check Linting
                   command: yarn lint
@@ -52,6 +54,15 @@ workflows:
         jobs:
             - check_lint_and_test
             - make_new_build:
-                requires:
-                    - check_lint_and_test
-            
+                  requires:
+                      - check_lint_and_test
+                  branches:
+                      only:
+                          - setup/heroku
+            - heroku/deploy-via-git:
+                  requires:
+                      - check_lint_and_test
+                      - make_new_build
+                  branches:
+                      only:
+                          - setup/heroku

@@ -4,48 +4,50 @@ Task for frontend
 
 ## Base Tools
 
-- Typescript
-- Webpack
-- Eslint
-- Styled Components
-- Husky Hooks
-- Heroku
-- Circleci
+-   Typescript
+-   Webpack
+-   Eslint
+-   Styled Components
+-   Husky Hooks
+-   Heroku
+-   Circleci
 
 ## Main Tasks
 
-- [ ] Add layout for the page.
+-   [ ] Add layout for the page.
 
-- [ ] Design Components for listing the memos
+-   [ ] Design Components for listing the memos
 
-- [ ] Create Functionality
+-   [ ] Create Functionality
 
-- [ ] Delete Functionality
+-   [ ] Delete Functionality
 
-- [ ] Update
+-   [ ] Update
 
-- [ ] UX Handling for intricasies
+-   [ ] UX Handling for intricasies
 
 ## Optimizations
 
-- Monitor perf in dev environment
+-   Monitor perf in dev environment
 
-- Code Splitting
+-   Code Splitting
 
-- Lazy Loading
+-   Lazy Loading
 
-- CDN usage efficiently with fallback
+-   CDN usage efficiently with fallback
 
-- Enhancing designs
+-   Enhancing designs
+
+-   gzip compression
 
 ## Good to have
 
-- Circleci
+-   Circleci
 
-- Heroku deployment
+-   Heroku deployment
 
-- Function documentation
+-   Function documentation
 
-- Unit tests(automated and logic)
+-   Unit tests(automated and logic)
 
-- Docker Image
+-   Docker Image

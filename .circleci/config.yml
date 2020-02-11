@@ -56,13 +56,15 @@ workflows:
             - make_new_build:
                   requires:
                       - check_lint_and_test
-                  branches:
-                      only:
-                          - setup/heroku
+                  filters:
+                      branches:
+                        only:
+                            - setup/heroku
             - heroku/deploy-via-git:
                   requires:
                       - check_lint_and_test
                       - make_new_build
-                  branches:
-                      only:
-                          - setup/heroku
+                  filters: 
+                    branches:
+                        only:
+                            - setup/heroku

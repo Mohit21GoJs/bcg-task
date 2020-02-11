@@ -2,7 +2,8 @@ version: 2.1
 parameters:
     app-name: tiles-map
 orbs:
-    deploy-to-heroku: rise/deploy-to-heroku@0.0.6
+    deploy-to-heroku: betterdoc/deploy-to-heroku@4.1.0
+
 defaults: &defaults
     working_directory: ~/demo-tiles
     docker:
@@ -32,43 +33,15 @@ jobs:
                   root: .
                   paths: .
 
-    make_new_build:
-        <<: *defaults
-        steps:
-            - attach_workspace:
-                  at: ~/demo-tiles
-            - run:
-                  name: Make new build
-                  command: yarn build
-
-    deploy_to_heroku:
-        <<: *defaults
-        steps:
-            - attach_workspace:
-                  at: ~/demo-tiles
-            - deploy-to-heroku/docker-build-release:
-                  parameters:
-                      app-name:
-                          description: The Heroku app name to which the application should be deployed
-                          type: string
-
 workflows:
     version: 2.1
     deploy_new_version:
         jobs:
             - check_lint_and_test
-            - make_new_build:
-                  requires:
-                      - check_lint_and_test
-                  filters:
-                      branches:
-                          only:
-                              - setup/heroku
-            - deploy_to_heroku:
+            - deploy-to-heroku/docker-build-release:
                   app-name: tiles-map
                   requires:
                       - check_lint_and_test
-                      - make_new_build
                   filters:
                       branches:
                           only:

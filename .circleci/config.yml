@@ -1,6 +1,4 @@
 version: 2.1
-orbs:
-    heroku: circleci/heroku@1.0.1 # Invoke the Heroku orb
 defaults: &defaults
     working_directory: ~/demo-tiles
     docker:
@@ -44,9 +42,6 @@ jobs:
         steps:
             - attach_workspace:
                   at: ~/demo-tiles
-            - run:
-                  name: Publish To Heroku
-                  command: yarn run semantic-release
 
 workflows:
     version: 2.1
@@ -58,13 +53,13 @@ workflows:
                       - check_lint_and_test
                   filters:
                       branches:
-                        only:
-                            - setup/heroku
-            - heroku/deploy-via-git:
+                          only:
+                              - setup/heroku
+            - deploy_to_heroku:
                   requires:
                       - check_lint_and_test
                       - make_new_build
-                  filters: 
-                    branches:
-                        only:
-                            - setup/heroku
+                  filters:
+                      branches:
+                          only:
+                              - setup/heroku

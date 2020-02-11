@@ -8,7 +8,4 @@ RUN yarn build
 FROM nginx:1.12-alpine
 COPY default.conf.template /etc/nginx/conf.d/default.conf.template
 COPY --from=build-deps /usr/src/app/dist /usr/share/nginx/html
-# For heroku
-# RUN adduser -D myuser
-# USER myuser
 CMD /bin/sh -c "envsubst '\$PORT' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf" && nginx -g 'daemon off;'

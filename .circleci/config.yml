@@ -1,4 +1,6 @@
 version: 2.1
+orbs:
+  deploy-to-heroku: betterdoc/deploy-to-heroku@4.1.0
 defaults: &defaults
     working_directory: ~/demo-tiles
     docker:
@@ -55,7 +57,9 @@ workflows:
                       branches:
                           only:
                               - setup/heroku
-            - deploy_to_heroku:
+            - docker-build-release:
+                  parameters:
+                    
                   requires:
                       - check_lint_and_test
                       - make_new_build

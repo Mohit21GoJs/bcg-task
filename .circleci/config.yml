@@ -32,13 +32,12 @@ jobs:
             - persist_to_workspace:
                   root: .
                   paths: .
-      deploy-docker-heroku:
-          <<: *defaults
-          steps:
+    deploy-docker-heroku:
+        <<: *defaults
+        steps:
             - deploy-to-heroku/setup
             - deploy-to-heroku/install_dependencies
             - deploy-to-heroku/docker-build-release
-
 
 workflows:
     version: 2.1

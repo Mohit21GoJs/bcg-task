@@ -1,4 +1,7 @@
 version: 2.1
+orbs:
+    deploy-to-heroku: rise/deploy-to-heroku@0.0.6
+
 defaults: &defaults
     working_directory: ~/demo-tiles
     docker:
@@ -10,48 +13,41 @@ jobs:
             - checkout
             # Download and cache dependencies
             - restore_cache:
-                keys:
-                    - v1-dependencies-{{ checksum "package.json" }}
-                    # fallback to using the latest cache if no exact match is found
-                    - v1-dependencies-
+                  keys:
+                      - v1-dependencies-{{ checksum "package.json" }}
+                      # fallback to using the latest cache if no exact match is found
+                      - v1-dependencies-
             - run:
                   name: Install dependcies
                   command: yarn install
             - save_cache:
-                paths:
-                    - node_modules
-                key: v1-dependencies-{{ checksum "package.json" }}
+                  paths:
+                      - node_modules
+                  key: v1-dependencies-{{ checksum "package.json" }}
             - run:
                   name: Check Linting
                   command: yarn lint
             - persist_to_workspace:
                   root: .
                   paths: .
-
-    make_new_build:
+    deploy-docker-heroku:
         <<: *defaults
         steps:
-            - attach_workspace:
-                  at: ~/demo-tiles
-            - run:
-                  name: Make new build
-                  command: yarn build
-
-    deploy_to_heroku:
-        <<: *defaults
-        steps:
-            - attach_workspace:
-                  at: ~/demo-tiles
-            - run:
-                  name: Publish To Heroku
-                  command: yarn run semantic-release
+            - deploy-to-heroku/setup
+            - deploy-to-heroku/install_dependencies
+            - deploy-to-heroku/docker-build-release:
+                  app-name: tiles-map
+                  app-arg: ENV=production
 
 workflows:
     version: 2.1
     deploy_new_version:
         jobs:
             - check_lint_and_test
-            - make_new_build:
-                requires:
-                    - check_lint_and_test
-            
+            - deploy-docker-heroku:
+                  requires:
+                      - check_lint_and_test
+                  filters:
+                      branches:
+                          only:
+                              - setup/heroku

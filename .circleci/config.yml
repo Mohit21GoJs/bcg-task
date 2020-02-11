@@ -51,7 +51,7 @@ workflows:
     deploy_new_version:
         jobs:
             - check_lint_and_test
-            - make_new_build
+            - make_new_build:
                 requires:
                     - check_lint_and_test
             

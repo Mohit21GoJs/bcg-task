@@ -1,6 +1,4 @@
 version: 2.1
-parameters:
-    app-name: tiles-map
 orbs:
     deploy-to-heroku: rise/deploy-to-heroku@0.0.6
 

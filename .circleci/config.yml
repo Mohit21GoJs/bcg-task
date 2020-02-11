@@ -41,12 +41,13 @@ jobs:
                   name: Make new build
                   command: yarn build
 
-    # deploy_to_heroku:
-    #     <<: *defaults
-    #     steps:
-    #         - attach_workspace:
-    #               at: ~/demo-tiles
-    #         - run:
+    deploy_to_heroku:
+        <<: *defaults
+        steps:
+            - attach_workspace:
+                  at: ~/demo-tiles
+            - deploy-to-heroku/docker-build-release:
+                  app-name: tiles-map
 
 workflows:
     version: 2.1
@@ -60,7 +61,7 @@ workflows:
                       branches:
                           only:
                               - setup/heroku
-            - deploy-to-heroku/docker-build-release:
+            - deploy_to_heroku:
                   requires:
                       - check_lint_and_test
                       - make_new_build

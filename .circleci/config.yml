@@ -47,7 +47,10 @@ jobs:
             - attach_workspace:
                   at: ~/demo-tiles
             - deploy-to-heroku/docker-build-release:
-                  app-name: tiles-map
+                  parameters:
+                      app-name:
+                          description: The Heroku app name to which the application should be deployed
+                          type: string
 
 workflows:
     version: 2.1
@@ -62,6 +65,7 @@ workflows:
                           only:
                               - setup/heroku
             - deploy_to_heroku:
+                  app-name: tiles-map
                   requires:
                       - check_lint_and_test
                       - make_new_build

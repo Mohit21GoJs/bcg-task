@@ -48,7 +48,10 @@ jobs:
                   at: ~/demo-tiles
             - deploy-to-heroku/docker-build-release:
                   parameters:
-                      app-name: tiles-map
+                      app-name:
+                          description: 'The Heroku app that has been deployed'
+                          type: string
+                          default: tiles-map
 
 workflows:
     version: 2.1

@@ -1,4 +1,6 @@
 version: 2.1
+parameters:
+    app-name: tiles-map
 orbs:
     deploy-to-heroku: betterdoc/deploy-to-heroku@4.1.0
 defaults: &defaults
@@ -59,8 +61,6 @@ workflows:
                           only:
                               - setup/heroku
             - deploy-to-heroku/docker-build-release:
-                  parameters:
-                      app-name: tiles-map
                   requires:
                       - check_lint_and_test
                       - make_new_build

@@ -47,7 +47,8 @@ jobs:
             - attach_workspace:
                   at: ~/demo-tiles
             - deploy-to-heroku/docker-build-release:
-                  app-name: tiles-map
+                  parameters:
+                      app-name: tiles-map
 
 workflows:
     version: 2.1

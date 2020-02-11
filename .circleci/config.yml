@@ -37,7 +37,7 @@ jobs:
             - deploy-to-heroku/install_dependencies
             - deploy-to-heroku/docker-build-release:
                   app-name: tiles-map
-                  app-args: ''
+                  app-arg: ''
 
 workflows:
     version: 2.1

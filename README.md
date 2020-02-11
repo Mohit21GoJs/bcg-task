@@ -1,49 +1,51 @@
 # bcg-task
+
 Task for frontend
 
 ## Base Tools
 
-* Typescript
-* Webpack
-* Eslint
-* Styled Components
-* Husky Hooks
-* Heroku
-* Circleci
+- Typescript
+- Webpack
+- Eslint
+- Styled Components
+- Husky Hooks
+- Heroku
+- Circleci
 
 ## Main Tasks
 
-[] Add layout for the page.
+[ ] Add layout for the page.
 
-[] Design Components for listing the memos
+[ ] Design Components for listing the memos
 
-[] Create Functionality
+[ ] Create Functionality
 
-[] Delete Functionality
+[ ] Delete Functionality
 
-[] Update
+[ ] Update
 
-[] UX Handling for intricasies
+[ ] UX Handling for intricasies
 
 ## Optimizations
-* Monitor perf in dev environment
 
-* Code Splitting
+- Monitor perf in dev environment
 
-* Lazy Loading
+- Code Splitting
 
-* CDN usage efficiently with fallback
+- Lazy Loading
 
-* Enhancing designs
+- CDN usage efficiently with fallback
+
+- Enhancing designs
 
 ## Good to have
-* Circleci
 
-* Heroku deployment
+- Circleci
 
-* Function documentation
+- Heroku deployment
 
-* Unit tests(automated and logic)
+- Function documentation
 
+- Unit tests(automated and logic)
 
-
+- Docker Image

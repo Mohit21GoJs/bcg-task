@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  deploy-to-heroku: betterdoc/deploy-to-heroku@4.1.0
+    deploy-to-heroku: betterdoc/deploy-to-heroku@4.1.0
 defaults: &defaults
     working_directory: ~/demo-tiles
     docker:
@@ -39,11 +39,12 @@ jobs:
                   name: Make new build
                   command: yarn build
 
-    deploy_to_heroku:
-        <<: *defaults
-        steps:
-            - attach_workspace:
-                  at: ~/demo-tiles
+    # deploy_to_heroku:
+    #     <<: *defaults
+    #     steps:
+    #         - attach_workspace:
+    #               at: ~/demo-tiles
+    #         - run:
 
 workflows:
     version: 2.1
@@ -59,7 +60,7 @@ workflows:
                               - setup/heroku
             - docker-build-release:
                   parameters:
-                    
+                      app-name: tiles-map
                   requires:
                       - check_lint_and_test
                       - make_new_build

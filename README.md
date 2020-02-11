@@ -42,12 +42,12 @@ Task for frontend
 
 ## Good to have
 
--   Circleci
+-   [x] Circleci
 
--   Heroku deployment
+-   [x] Heroku deployment
 
--   Function documentation
+-   [ ]Function documentation
 
--   Unit tests(automated and logic)
+-   [ ] Unit tests(automated and logic)
 
--   Docker Image
+-   [x] Docker Images

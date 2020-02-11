@@ -8,7 +8,7 @@ interface HelloProps {
 
 const Hello = (props: HelloProps) => (
     <h1>
-        Hello from orb inside{props.compiler} and {props.framework}!
+        Hello from Dev Environment {props.compiler} and {props.framework}!
     </h1>
 );
 

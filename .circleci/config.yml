@@ -2,7 +2,7 @@ version: 2.1
 parameters:
     app-name: tiles-map
 orbs:
-    deploy-to-heroku: betterdoc/deploy-to-heroku@4.1.0
+    deploy-to-heroku: rise/deploy-to-heroku@0.0.6
 
 defaults: &defaults
     working_directory: ~/demo-tiles
@@ -32,14 +32,20 @@ jobs:
             - persist_to_workspace:
                   root: .
                   paths: .
+      deploy-docker-heroku:
+          <<: *defaults
+          steps:
+            - deploy-to-heroku/setup
+            - deploy-to-heroku/install_dependencies
+            - deploy-to-heroku/docker-build-release
+
 
 workflows:
     version: 2.1
     deploy_new_version:
         jobs:
             - check_lint_and_test
-            - deploy-to-heroku/docker-build-release:
-                  app-name: tiles-map
+            - deploy-docker-heroku:
                   requires:
                       - check_lint_and_test
                   filters:

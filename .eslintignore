@@ -1,0 +1,3 @@
+# Ignore js files which are outside src but lint the ones inside src
+*.js
+!src/**/*.js

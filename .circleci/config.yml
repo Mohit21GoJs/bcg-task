@@ -1,0 +1,64 @@
+version: 2.1
+defaults: &defaults
+    working_directory: ~/demo-tiles
+    docker:
+        - image: circleci/node:lts
+jobs:
+    check_lint_and_test:
+        <<: *defaults
+        steps:
+            - checkout
+            # Download and cache dependencies
+            - restore_cache:
+                keys:
+                    - v1-dependencies-{{ checksum "package.json" }}
+                    # fallback to using the latest cache if no exact match is found
+                    - v1-dependencies-
+            - run:
+                  name: Install dependcies
+                  command: yarn install
+            - save_cache:
+                paths:
+                    - node_modules
+                key: v1-dependencies-{{ checksum "package.json" }}
+            - run:
+                  name: Check Linting
+                  command: yarn lint
+            - persist_to_workspace:
+                  root: .
+                  paths: .
+
+    make_new_build:
+        <<: *defaults
+        steps:
+            - attach_workspace:
+                  at: ~/demo-tiles
+            - run:
+                  name: Make new build
+                  command: yarn build
+
+    deploy_to_heroku:
+        <<: *defaults
+        steps:
+            - attach_workspace:
+                  at: ~/demo-tiles
+            - run:
+                  name: Publish To Heroku
+                  command: yarn run semantic-release
+
+workflows:
+    version: 2.1
+    deploy_new_version:
+        jobs:
+            - check_lint_and_test
+            - make_new_build
+                requires:
+                    - check_lint_and_test
+            
+            - publish_version:
+                  filters:
+                      branches:
+                          only:
+                              - next
+                  requires:
+                      - check_lint_and_test

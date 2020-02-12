@@ -1,7 +1,8 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { string, bool, func } from 'prop-types';
-import Button from './Button';
+import dayjs from 'dayjs';
+import { FaTimesCircle } from 'react-icons/fa';
 import { useFocus } from '../helpers/hooks';
 
 const CardWrapper = styled.div`
@@ -13,30 +14,55 @@ const CardWrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-family: Quicksand, arial, sans-serif;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.05), 0 0px 40px rgba(0, 0, 0, 0.08);
     border-radius: 5px;
+    textarea:focus,
+    input:focus {
+        outline: none;
+    }
 `;
 
 const CardTitle = styled.div`
     font-size: 24px;
     font-weight: bold;
-    text-align: center;
     max-width: 100%;
-    & input:focus {
-        background: red;
+    input {
+        text-align: center;
+        border: hidden;
+        width: 90%;
+        font-size: 1em;
+        &:focus {
+            border-style: solid;
+            border-color: #d3d3d3;
+        }
+    }
+    .delete {
+        cursor: pointer;
     }
 `;
 
 const CardBody = styled.div`
     width: 100%;
     min-height: 50px;
+    textarea {
+        border: hidden;
+        width: 90%;
+        height: 50px;
+        resize: none;
+        &:focus {
+            border-style: solid;
+            border-color: #d3d3d3;
+        }
+    }
 `;
 
 const CardFooter = styled.div`
     color: grey;
     font-size: 10px;
     margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 `;
 interface CardProps {
     id: string;
@@ -52,6 +78,7 @@ interface CardProps {
 
 const MAXBODYLEN = 140;
 const LIMITFORCOUNTER = 15;
+
 const Tile: React.FC<CardProps> = ({
     title,
     body,
@@ -73,18 +100,28 @@ const Tile: React.FC<CardProps> = ({
             resetAddNew();
         }
     }, [isNew]);
+    // Sync value coming from parent
+    React.useEffect(() => {
+        setCardTitle(title);
+    }, [title]);
+    React.useEffect(() => {
+        setCardBody(body);
+    }, [body]);
     return (
         <CardWrapper onMouseEnter={() => setIsDeleteShown(true)} onMouseLeave={() => setIsDeleteShown(false)}>
             <CardTitle>
                 <input
+                    className="title"
                     value={cardTitle}
                     ref={titleRef}
                     onChange={e => setCardTitle(e.target.value)}
-                    onBlur={(): void =>
-                        handleUpdateIdea(id, {
-                            title: cardTitle,
-                        })
-                    }
+                    onBlur={(): void => {
+                        if (title !== cardTitle) {
+                            handleUpdateIdea(id, {
+                                title: cardTitle,
+                            });
+                        }
+                    }}
                 />
             </CardTitle>
             <CardBody>
@@ -92,16 +129,22 @@ const Tile: React.FC<CardProps> = ({
                     value={cardBody}
                     maxLength={MAXBODYLEN}
                     onChange={e => setCardBody(e.target.value)}
-                    onBlur={() =>
-                        handleUpdateIdea(id, {
-                            body: cardBody,
-                        })
-                    }
+                    onBlur={() => {
+                        if (body !== cardBody) {
+                            handleUpdateIdea(id, {
+                                body: cardBody,
+                            });
+                        }
+                    }}
                 />
                 {remainingBodyChars < LIMITFORCOUNTER && <div>Remaining: {remainingBodyChars}</div>}
             </CardBody>
-            <CardFooter>{createdAt}</CardFooter>
-            {isDeleteShown && <Button onClick={() => deleteIdea(id)}>x</Button>}
+            <CardFooter>
+                <div>
+                    {isDeleteShown && <FaTimesCircle className="delete" size="20" onClick={() => deleteIdea(id)} />}
+                </div>
+                <div>{dayjs(createdAt).format('DD/MM/YYYY HH:mm:ss SSS')}</div>
+            </CardFooter>
         </CardWrapper>
     );
 };

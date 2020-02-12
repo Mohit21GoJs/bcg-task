@@ -29,7 +29,7 @@ async function getIdeas(): Promise<Idea[]> {
 }
 
 async function getNewIdea(): Promise<IdeaBaseFields> {
-    const response = await fetch(`${baseApi}/ideas`);
+    const response = await fetch(`${baseApi}/ideas/new`);
     if (response.ok) {
         const idea = await response.json();
         return {

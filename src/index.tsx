@@ -1,15 +1,5 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import Main from './main';
 
-interface HelloProps {
-    compiler: string;
-    framework: string;
-}
-
-const Hello = (props: HelloProps) => (
-    <h1>
-        Hello from Dev Environment {props.compiler} and {props.framework}!
-    </h1>
-);
-
-ReactDOM.render(<Hello compiler="TypeScript" framework="React" />, document.getElementById('content'));
+ReactDOM.render(<Main />, document.getElementById('content'));

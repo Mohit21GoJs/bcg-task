@@ -1,9 +1,17 @@
 import * as React from 'react';
 import orderBy from 'lodash/orderBy';
 import styled from 'styled-components';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { getIdeas, getNewIdea, resetIdeas, updateIdea, deleteIdea } from './helpers/api';
 import Tile from './components/Tile';
 import Button from './components/Button';
+
+// Configure toasts
+toast.configure({
+    autoClose: 3000,
+    draggable: false,
+});
 
 const IdeaContainer = styled.div`
     display: flex;
@@ -46,6 +54,7 @@ const Main: React.FC = () => {
 
     const handleResetIdeas = React.useCallback(async () => {
         await resetIdeas();
+        toast.success('Ideas Resetted');
         fetchAndSetIdeas();
     }, []);
 
@@ -54,6 +63,7 @@ const Main: React.FC = () => {
             setActiveIdea(id);
             const ideaIndex = ideas.findIndex(idea => idea.id === id);
             const idea = await updateIdea(id, payload);
+            toast.success('Idea Updated');
             const newIdeas = [...ideas];
             newIdeas.splice(ideaIndex, 1, idea);
             setIdeas(newIdeas);
@@ -65,6 +75,7 @@ const Main: React.FC = () => {
         async id => {
             setActiveIdea(id);
             await deleteIdea(id);
+            toast.success('Idea Deleted');
             setIdeas(ideas => ideas.filter(idea => idea.id !== id));
         },
         [activeIdea, deleteIdea, fetchAndSetIdeas],

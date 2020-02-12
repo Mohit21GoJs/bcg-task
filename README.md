@@ -16,6 +16,7 @@
 -   Circleci
 -   Docker
 -   Nginx for production
+-   [Sandbox](https://getsandbox.com/) for smart stubs(/stubs)
 
 ## Optimizations
 
@@ -25,6 +26,7 @@
 ## WIP(Addons)
 
 -  [ ] Function documentation
+
 -  [ ] Monitor perf in dev environment
 
 -  [ ] Code Splitting

@@ -37,7 +37,14 @@ const Layout = styled.div`
         width: 20%;
     }
 `;
+
+// @FIXME: check compatibility of react-select with ts to fix the value issues
 const Main: React.FC = () => {
+    const selectOptions = [
+        { value: '', label: 'Default' },
+        { value: 'title', label: 'Title' },
+        { value: 'createdAt', label: 'Created Date' },
+    ];
     const [ideas, setIdeas] = React.useState<Idea[]>([]);
     const [displayIdeas, setDisplayIdeas] = React.useState(ideas);
     const [activeIdea, setActiveIdea] = React.useState('');
@@ -86,6 +93,7 @@ const Main: React.FC = () => {
     );
 
     React.useEffect(() => {
+        console.log(sortOption);
         if (sortOption) {
             const sortedIdeas = [...ideas];
             switch (sortOption) {
@@ -121,15 +129,19 @@ const Main: React.FC = () => {
     React.useEffect(() => {
         fetchAndSetIdeas();
     }, []);
-    const selectOptions = [
-        { value: '', label: 'Default' },
-        { value: 'title', label: 'Title' },
-        { value: 'createdAt', label: 'Created Date' },
-    ];
 
     return (
         <Layout>
-            <Select className="sort-select" value={sortOption} onChange={setSortOption} options={selectOptions} />
+            <Select
+                className="sort-select"
+                options={selectOptions}
+                // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+                // @ts-ignore
+                value={sortOption}
+                // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+                // @ts-ignore
+                onChange={selectedOption => setSortOption(selectedOption.value)}
+            />
 
             <IdeaContainer>
                 {displayIdeas.map(idea => (

@@ -10,8 +10,11 @@ type IdeaContent = {
 
 type Idea = IdeaBaseFields & IdeaContent;
 
+// FIXME: to move to config and build bundle changes
+const baseApi = 'https://tiles-be.getsandbox.com';
+
 async function getIdeas(): Promise<Idea[]> {
-    const response = await fetch('https://tiles-be.getsandbox.com/ideas');
+    const response = await fetch(`${baseApi}/ideas`);
     if (response.ok) {
         const ideas: any[] = await response.json();
         return ideas.map(idea => {
@@ -26,7 +29,7 @@ async function getIdeas(): Promise<Idea[]> {
 }
 
 async function getNewIdea(): Promise<IdeaBaseFields> {
-    const response = await fetch('https://tiles-be.getsandbox.com/ideas/new');
+    const response = await fetch(`${baseApi}/ideas`);
     if (response.ok) {
         const idea = await response.json();
         return {
@@ -42,11 +45,11 @@ async function getNewIdea(): Promise<IdeaBaseFields> {
 }
 
 async function resetIdeas(): Promise<void> {
-    await fetch('https://tiles-be.getsandbox.com/ideas/reset');
+    await fetch(`${baseApi}/ideas/reset`);
 }
 
 async function updateIdea(id: string, body: IdeaContent): Promise<Idea> {
-    const response = await fetch(`https://tiles-be.getsandbox.com/idea/${id}`, {
+    const response = await fetch(`${baseApi}/idea/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json; charset=utf-8' },
         body: JSON.stringify(body),
@@ -70,7 +73,7 @@ async function updateIdea(id: string, body: IdeaContent): Promise<Idea> {
 }
 
 async function deleteIdea(id: string): Promise<void> {
-    await fetch(`https://tiles-be.getsandbox.com/idea/${id}`, {
+    await fetch(`${baseApi}/idea/${id}`, {
         method: 'DELETE',
     });
 }

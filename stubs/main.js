@@ -22,5 +22,5 @@ Sandbox.define('/idea/{id}', 'PATCH', function(req, res) {
 
 // Delete Idea
 Sandbox.define('/idea/{id}', 'DELETE', function(req, res) {
-    return res.send(req.body);
+    return res.send({});
 });

@@ -75,4 +75,4 @@ async function deleteIdea(id: string): Promise<void> {
     });
 }
 
-export { getIdeas, getNewIdea, updateIdea, deleteIdea, resetIdeas };
+export { Idea, getIdeas, getNewIdea, updateIdea, deleteIdea, resetIdeas };

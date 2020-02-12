@@ -1,9 +1,9 @@
 import * as React from 'react';
-import orderBy from 'lodash/orderBy';
 import styled from 'styled-components';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { getIdeas, getNewIdea, resetIdeas, updateIdea, deleteIdea } from './helpers/api';
+import Select from 'react-select';
+import { Idea, getIdeas, getNewIdea, resetIdeas, updateIdea, deleteIdea } from './helpers/api';
 import Tile from './components/Tile';
 import Button from './components/Button';
 
@@ -33,9 +33,12 @@ const Layout = styled.div`
         background-color: blue;
         max-width: 10vw;
     }
+    & .sort-select {
+        width: 20%;
+    }
 `;
 const Main: React.FC = () => {
-    const [ideas, setIdeas] = React.useState([]);
+    const [ideas, setIdeas] = React.useState<Idea[]>([]);
     const [displayIdeas, setDisplayIdeas] = React.useState(ideas);
     const [activeIdea, setActiveIdea] = React.useState('');
     const [isAddNew, setIsAddNew] = React.useState(false);
@@ -49,8 +52,9 @@ const Main: React.FC = () => {
         const idea = await getNewIdea();
         setActiveIdea(idea.id);
         setIsAddNew(true);
-        setIdeas(ideas => [...ideas, ...[idea]]);
-    }, []);
+        const newIdeas = [...ideas, ...[idea]];
+        setIdeas(newIdeas as Idea[]);
+    }, [ideas, getNewIdea, setActiveIdea, setIsAddNew]);
 
     const handleResetIdeas = React.useCallback(async () => {
         await resetIdeas();
@@ -83,8 +87,32 @@ const Main: React.FC = () => {
 
     React.useEffect(() => {
         if (sortOption) {
-            const newIdeas = orderBy(ideas, [sortOption]);
-            setDisplayIdeas(newIdeas);
+            const sortedIdeas = [...ideas];
+            switch (sortOption) {
+                case 'title':
+                    sortedIdeas.sort((a, b) => {
+                        const aTitle = a.title || '';
+                        const bTitle = b.title || '';
+                        return aTitle.localeCompare(bTitle);
+                    });
+                    break;
+                case 'createdAt':
+                    // Calculate after comparing to milliseconds
+                    sortedIdeas.sort((a, b) => {
+                        const aDate = new Date(a.createdAt);
+                        const bDate = new Date(b.createdAt);
+                        const createdAtForA = aDate.getTime();
+                        const createdAtForB = bDate.getTime();
+                        if (createdAtForA < createdAtForB) {
+                            return -1;
+                        }
+                        if (createdAtForA > createdAtForB) {
+                            return 1;
+                        }
+                        return 0;
+                    });
+            }
+            setDisplayIdeas(sortedIdeas);
         } else {
             setDisplayIdeas(ideas);
         }
@@ -93,25 +121,27 @@ const Main: React.FC = () => {
     React.useEffect(() => {
         fetchAndSetIdeas();
     }, []);
+    const selectOptions = [
+        { value: '', label: 'Default' },
+        { value: 'title', label: 'Title' },
+        { value: 'createdAt', label: 'Created Date' },
+    ];
+
     return (
         <Layout>
-            <select onChange={e => setSortOption(e.target.value)}>
-                <option value="">Unsorted</option>
-                <option value="title">Title</option>
-                <option value="createdAt">Created Date</option>
-            </select>
+            <Select className="sort-select" value={sortOption} onChange={setSortOption} options={selectOptions} />
+
             <IdeaContainer>
                 {displayIdeas.map(idea => (
-                    <div key={idea.id}>
-                        <Tile
-                            resetAddNew={() => setIsAddNew(false)}
-                            deleteIdea={handleDeleteIdea}
-                            handleUpdateIdea={handleUpdateIdea}
-                            isNew={isAddNew && idea.id === activeIdea}
-                            isActive={idea.id === activeIdea}
-                            {...idea}
-                        />
-                    </div>
+                    <Tile
+                        key={idea.id}
+                        resetAddNew={() => setIsAddNew(false)}
+                        deleteIdea={handleDeleteIdea}
+                        handleUpdateIdea={handleUpdateIdea}
+                        isNew={isAddNew && idea.id === activeIdea}
+                        isActive={idea.id === activeIdea}
+                        {...idea}
+                    />
                 ))}
             </IdeaContainer>
             <Button className="add-new" onClick={handleAddNewIdea}>

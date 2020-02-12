@@ -4,7 +4,6 @@
 
 [Heroku Link](https://tiles-map.herokuapp.com/)
 
-
 ## Base Tools Used
 
 -   Typescript
@@ -20,22 +19,22 @@
 
 ## Optimizations
 
-- gzip compression.
-- webpack bundle minifications.
+-   gzip compression.
+-   webpack bundle minifications.
+-   webpack bundle analyzer(runs at port 8888 on localhost)
 
 ## WIP(Addons)
 
--  [ ] Function documentation
+-   [ ] Function documentation
 
--  [ ] Monitor perf in dev environment
+-   [ ] Monitor perf in dev environment
 
--  [ ] Code Splitting
+-   [ ] Code Splitting
 
--  [ ] Lazy Loading
+-   [ ] Lazy Loading
 
--  [ ] CDN usage(Not needed as of now)
+-   [ ] CDN usage(Not needed as of now)
 
--  [ ] Enhancing designs
+-   [ ] Enhancing designs
 
--  [ ] Unit tests(automated and logic) 
-
+-   [ ] Unit tests(automated and logic)

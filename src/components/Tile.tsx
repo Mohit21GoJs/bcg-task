@@ -2,7 +2,6 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { string, bool, func } from 'prop-types';
 import dayjs from 'dayjs';
-import { FaTimesCircle } from 'react-icons/fa';
 import { useFocus } from '../helpers/hooks';
 
 const CardWrapper = styled.div`
@@ -141,7 +140,7 @@ const Tile: React.FC<CardProps> = ({
             </CardBody>
             <CardFooter>
                 <div>
-                    {isDeleteShown && <FaTimesCircle className="delete" size="20" onClick={() => deleteIdea(id)} />}
+                    {isDeleteShown && <i className="delete fa fa-times-circle fa-3x" onClick={() => deleteIdea(id)} />}
                 </div>
                 <div>{dayjs(createdAt).format('DD/MM/YYYY HH:mm:ss SSS')}</div>
             </CardFooter>

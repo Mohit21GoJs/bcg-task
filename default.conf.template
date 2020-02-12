@@ -1,4 +1,10 @@
 server {
+  gzip on;
+  gzip_disable "MSIE [1-6]\\.(?!.*SV1)";
+  gzip_proxied any;
+  gzip_comp_level 5;
+  gzip_types text/plain text/css application/javascript application/x-javascript text/xml application/xml application/rss+xml text/javascript image/x-icon image/bmp image/svg+xml;
+  gzip_vary on;
   listen $PORT default_server;
 
   location / {

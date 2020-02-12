@@ -38,26 +38,39 @@ const CardFooter = styled.div`
     font-size: 10px;
     margin-top: auto;
 `;
-
 interface CardProps {
     id: string;
-    title: string;
-    body: string;
-    createdAt: string;
-    isActive: boolean;
-    isNew: boolean;
+    title?: string;
+    body?: string;
+    createdAt?: string;
+    isActive?: boolean;
+    isNew?: boolean;
     handleUpdateIdea: (id: string, payload: {}) => void;
     deleteIdea: (id: string) => void;
+    resetAddNew: () => void;
 }
 
-const Tile: React.FC<CardProps> = ({ title, body, createdAt, handleUpdateIdea, isNew, deleteIdea, id }) => {
+const MAXBODYLEN = 140;
+const LIMITFORCOUNTER = 15;
+const Tile: React.FC<CardProps> = ({
+    title,
+    body,
+    createdAt,
+    handleUpdateIdea,
+    isNew,
+    deleteIdea,
+    id,
+    resetAddNew,
+}) => {
     const { htmlElRef: titleRef, setFocus: setTitleFocus } = useFocus();
     const [isDeleteShown, setIsDeleteShown] = React.useState(false);
     const [cardTitle, setCardTitle] = React.useState(title);
     const [cardBody, setCardBody] = React.useState(body);
+    const remainingBodyChars = MAXBODYLEN - cardBody.length;
     React.useEffect(() => {
         if (isNew) {
             setTitleFocus();
+            resetAddNew();
         }
     }, [isNew]);
     return (
@@ -77,6 +90,7 @@ const Tile: React.FC<CardProps> = ({ title, body, createdAt, handleUpdateIdea, i
             <CardBody>
                 <textarea
                     value={cardBody}
+                    maxLength={MAXBODYLEN}
                     onChange={e => setCardBody(e.target.value)}
                     onBlur={() =>
                         handleUpdateIdea(id, {
@@ -84,6 +98,7 @@ const Tile: React.FC<CardProps> = ({ title, body, createdAt, handleUpdateIdea, i
                         })
                     }
                 />
+                {remainingBodyChars < LIMITFORCOUNTER && <div>Remaining: {remainingBodyChars}</div>}
             </CardBody>
             <CardFooter>{createdAt}</CardFooter>
             {isDeleteShown && <Button onClick={() => deleteIdea(id)}>x</Button>}
@@ -100,6 +115,7 @@ Tile.propTypes = {
     isNew: bool,
     handleUpdateIdea: func.isRequired,
     deleteIdea: func.isRequired,
+    resetAddNew: func.isRequired,
 };
 
 Tile.defaultProps = {

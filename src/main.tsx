@@ -52,17 +52,20 @@ const Main: React.FC = () => {
     const handleUpdateIdea = React.useCallback(
         async (id, payload) => {
             setActiveIdea(id);
-            await updateIdea(id, payload);
-            fetchAndSetIdeas();
+            const ideaIndex = ideas.findIndex(idea => idea.id === id);
+            const idea = await updateIdea(id, payload);
+            const newIdeas = [...ideas];
+            newIdeas.splice(ideaIndex, 1, idea);
+            setIdeas(newIdeas);
         },
-        [setActiveIdea, updateIdea, fetchAndSetIdeas],
+        [ideas, setActiveIdea, updateIdea, fetchAndSetIdeas],
     );
 
     const handleDeleteIdea = React.useCallback(
         async id => {
             setActiveIdea(id);
             await deleteIdea(id);
-            fetchAndSetIdeas();
+            setIdeas(ideas => ideas.filter(idea => idea.id !== id));
         },
         [activeIdea, deleteIdea, fetchAndSetIdeas],
     );
@@ -70,7 +73,6 @@ const Main: React.FC = () => {
     React.useEffect(() => {
         if (sortOption) {
             const newIdeas = orderBy(ideas, [sortOption]);
-            debugger;
             setDisplayIdeas(newIdeas);
         } else {
             setDisplayIdeas(ideas);
@@ -82,10 +84,16 @@ const Main: React.FC = () => {
     }, []);
     return (
         <Layout>
+            <select onChange={e => setSortOption(e.target.value)}>
+                <option value="">Unsorted</option>
+                <option value="title">Title</option>
+                <option value="createdAt">Created Date</option>
+            </select>
             <IdeaContainer>
                 {displayIdeas.map(idea => (
                     <div key={idea.id}>
                         <Tile
+                            resetAddNew={() => setIsAddNew(false)}
                             deleteIdea={handleDeleteIdea}
                             handleUpdateIdea={handleUpdateIdea}
                             isNew={isAddNew && idea.id === activeIdea}
@@ -95,11 +103,6 @@ const Main: React.FC = () => {
                     </div>
                 ))}
             </IdeaContainer>
-            <select onChange={e => setSortOption(e.target.value)}>
-                <option value="">Unsorted</option>
-                <option value="title">Title</option>
-                <option value="createdAt">Created Date</option>
-            </select>
             <Button className="add-new" onClick={handleAddNewIdea}>
                 Add New
             </Button>

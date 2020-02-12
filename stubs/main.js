@@ -4,7 +4,10 @@ var initialIdeas = _.range(50).map(function(val){
     return { id: faker.random.uuid(), title: "Card "+ val, body: "Card #" + val + " Body", created_date: moment().subtract(val*6, 'hours')};
 })
 
-
+// Get Ideas
+Sandbox.define('/status', 'GET', function(req, res) {
+    res.send({ status: "Ok");
+});
 
 // Get Ideas
 Sandbox.define('/ideas', 'GET', function(req, res) {

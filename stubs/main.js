@@ -1,6 +1,16 @@
 
-state.ideas = [{ id: faker.random.uuid(), title: "Placeholder 1 Title", body: "Placeholder 1 Body", created_date: new Date()}, { id: faker.random.uuid(), title: "Placeholder 2 Title", body: "Placeholder 2 Body", created_date: new Date()}];
+var initialIdeas = [{ id: faker.random.uuid(), title: "Placeholder 1 Title", body: "Placeholder 1 Body", created_date: new Date()}, { id: faker.random.uuid(), title: "Placeholder 2 Title", body: "Placeholder 2 Body", created_date: new Date()}];
 
+function initStateIdeas(){
+    state.ideas = _.clone(initialIdeas);
+}
+// init during app start
+initStateIdeas();
+// Reset
+Sandbox.define('/ideas/reset', 'GET', function(req, res) {
+    initStateIdeas();
+    res.send(state.ideas);
+});
 // Get Ideas
 Sandbox.define('/ideas', 'GET', function(req, res) {
     res.send(state.ideas);

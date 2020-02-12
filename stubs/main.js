@@ -1,3 +1,4 @@
+
 state.ideas = [{ id: faker.random.uuid(), title: "Placeholder 1 Title", body: "Placeholder 1 Body", created_date: new Date()}, { id: faker.random.uuid(), title: "Placeholder 2 Title", body: "Placeholder 2 Body", created_date: new Date()}];
 
 // Get Ideas

@@ -6,6 +6,7 @@ import Select from 'react-select';
 import { Idea, getIdeas, getNewIdea, resetIdeas, updateIdea, deleteIdea } from './helpers/api';
 import Tile from './components/Tile';
 import Button from './components/Button';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // Configure toasts
 toast.configure({
@@ -131,38 +132,40 @@ const Main: React.FC = () => {
     }, []);
 
     return (
-        <Layout>
-            <Select
-                className="sort-select"
-                options={selectOptions}
-                // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-                // @ts-ignore
-                value={sortOption}
-                // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-                // @ts-ignore
-                onChange={selectedOption => setSortOption(selectedOption.value)}
-            />
+        <ErrorBoundary>
+            <Layout>
+                <Select
+                    className="sort-select"
+                    options={selectOptions}
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+                    // @ts-ignore
+                    value={sortOption}
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+                    // @ts-ignore
+                    onChange={selectedOption => setSortOption(selectedOption.value)}
+                />
 
-            <IdeaContainer>
-                {displayIdeas.map(idea => (
-                    <Tile
-                        key={idea.id}
-                        resetAddNew={() => setIsAddNew(false)}
-                        deleteIdea={handleDeleteIdea}
-                        handleUpdateIdea={handleUpdateIdea}
-                        isNew={isAddNew && idea.id === activeIdea}
-                        isActive={idea.id === activeIdea}
-                        {...idea}
-                    />
-                ))}
-            </IdeaContainer>
-            <Button className="add-new" onClick={handleAddNewIdea}>
-                Add New
-            </Button>
-            <Button className="reset" onClick={handleResetIdeas}>
-                Reset
-            </Button>
-        </Layout>
+                <IdeaContainer>
+                    {displayIdeas.map(idea => (
+                        <Tile
+                            key={idea.id}
+                            resetAddNew={() => setIsAddNew(false)}
+                            deleteIdea={handleDeleteIdea}
+                            handleUpdateIdea={handleUpdateIdea}
+                            isNew={isAddNew && idea.id === activeIdea}
+                            isActive={idea.id === activeIdea}
+                            {...idea}
+                        />
+                    ))}
+                </IdeaContainer>
+                <Button className="add-new" onClick={handleAddNewIdea}>
+                    Add New
+                </Button>
+                <Button className="reset" onClick={handleResetIdeas}>
+                    Reset
+                </Button>
+            </Layout>
+        </ErrorBoundary>
     );
 };
 

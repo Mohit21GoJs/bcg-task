@@ -17,7 +17,7 @@ module.exports = {
         }, ],
     },
     plugins: [new CleanWebpackPlugin(), new HtmlWebpackPlugin({
-        title: 'Demo Tiles App',
+        title: 'Ideas App',
         template: './index.html'
     })],
     resolve: {

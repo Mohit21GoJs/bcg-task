@@ -1,5 +1,9 @@
 # bcg-task
 
+![CircleCI](https://img.shields.io/circleci/build/github/Mohit21GoJs/bcg-task/master?style=for-the-badge&token=24da5b9aafe35da88df71082e8bd51ef42286d2f)
+
+[Heroku Link](https://tiles-map.herokuapp.com/)
+
 Task for frontend
 
 ## Base Tools
@@ -46,7 +50,7 @@ Task for frontend
 
 -   [x] Heroku deployment
 
--   [ ]Function documentation
+-   [ ] Function documentation
 
 -   [ ] Unit tests(automated and logic)
 

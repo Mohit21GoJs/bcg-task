@@ -17,20 +17,10 @@ Sandbox.define('/ideas/new', 'GET', function(req, res) {
 
 // Partial Update
 Sandbox.define('/idea/{id}', 'PATCH', function(req, res) {
-    var id = req.params.id;
-    var ideaIndex = _.findIndex(state.ideas, {id: id});
-    if(ideaIndex === -1){
-        return res.json(404, { error: { message: "Idea does not exist" } })
-    }
     return res.send(req.body);
 });
 
 // Delete Idea
 Sandbox.define('/idea/{id}', 'DELETE', function(req, res) {
-    var id = req.params.id;
-    var ideaIndex = _.findIndex(state.ideas, {id: id});
-    if(ideaIndex === -1){
-        return res.json(404, { error: { message: "Idea does not exist" } })
-    }
-    return res.send({});
+    return res.send(req.body);
 });

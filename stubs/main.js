@@ -1,7 +1,7 @@
 
-var nowDate = moment();
+
 var initialIdeas = _.range(50).map(function(val){ 
-    return { id: faker.random.uuid(), title: "Card "+ val, body: "Card #" + val + " Body", date: nowDate};
+    return { id: faker.random.uuid(), title: "Card "+ val, body: "Card #" + val + " Body", date: moment().subtract(val, 'days')};
 })
 
 

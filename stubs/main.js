@@ -1,5 +1,8 @@
 
-var initialIdeas = [{ id: faker.random.uuid(), title: "Card 1", body: "Card 1 Body", created_date: new Date()}, { id: faker.random.uuid(), title: "Card 2", body: "Card 2 Body", created_date: new Date()}];
+var nowDate = moment();
+var initialIdeas = _.range(50).map(function(val){ 
+    return { id: faker.random.uuid(), title: "Card "+ val, body: "Card #" + val + " Body", created_date: nowDate.subtract(val, 'hours')};
+})
 
 
 

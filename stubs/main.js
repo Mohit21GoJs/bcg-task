@@ -1,7 +1,7 @@
 
 
 var initialIdeas = _.range(50).map(function(val){ 
-    return { id: faker.random.uuid(), title: "Card "+ val, body: "Card #" + val + " Body", date: moment().subtract(val, 'days')};
+    return { id: faker.random.uuid(), title: "Card "+ val, body: "Card #" + val + " Body", created_date: moment().subtract(val, 'days')};
 })
 
 

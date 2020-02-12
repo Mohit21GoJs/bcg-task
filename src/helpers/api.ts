@@ -41,17 +41,38 @@ async function getNewIdea(): Promise<IdeaBaseFields> {
     }
 }
 
-function updateIdea(id: string, body: IdeaContent): Idea {
-    return {
-        title: '',
-        body: '',
-        createdAt: '',
-        id: '',
-    };
+async function resetIdeas(): Promise<void> {
+    await fetch('https://tiles-be.getsandbox.com/ideas/reset');
 }
 
-function deleteIdea(id: string): void {
-    // delete idea
+async function updateIdea(id: string, body: IdeaContent): Promise<Idea> {
+    const response = await fetch(`https://tiles-be.getsandbox.com/idea/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json; charset=utf-8' },
+        body: JSON.stringify(body),
+    });
+    if (response.ok) {
+        const idea = await response.json();
+        return {
+            title: idea.title,
+            body: idea.body,
+            createdAt: idea.created_date,
+            id: idea.id,
+        };
+    } else {
+        return {
+            title: '',
+            body: '',
+            createdAt: '',
+            id: '',
+        };
+    }
 }
 
-export { getIdeas, getNewIdea, updateIdea, deleteIdea };
+async function deleteIdea(id: string): Promise<void> {
+    await fetch(`https://tiles-be.getsandbox.com/idea/${id}`, {
+        method: 'DELETE',
+    });
+}
+
+export { getIdeas, getNewIdea, updateIdea, deleteIdea, resetIdeas };

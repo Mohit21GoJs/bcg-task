@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled from '@emotion/styled';
+import Button from './Button';
 
 const CardWrapper = styled.div`
     overflow: hidden;
@@ -15,15 +16,19 @@ const CardWrapper = styled.div`
     border-radius: 5px;
 `;
 
-const CardTitle = styled.h1`
+const CardTitle = styled.input`
     font-size: 24px;
     font-weight: bold;
     text-align: center;
+    max-width: 100%;
+    &:focus {
+        background: red;
+    }
 `;
 
-const CardBody = styled.div`
-    padding-right: 32px;
-    padding-left: 32px;
+const CardBody = styled.textarea`
+    width: 100%;
+    min-height: 50px;
 `;
 
 const CardFooter = styled.div`
@@ -36,13 +41,51 @@ interface CardProps {
     title: string;
     body: string;
     createdAt: string;
+    isActive: boolean;
+    isNew: boolean;
+    handleUpdateIdea: ({}) => any;
+    deleteIdea: ({}) => any;
 }
-const Tile: React.FC<CardProps> = ({ title, body, createdAt }) => {
+
+const useFocus = () => {
+    const htmlElRef = React.useRef(null);
+    const setFocus = () => {
+        htmlElRef.current && htmlElRef.current.focus();
+    };
+    return {
+        htmlElRef,
+        setFocus,
+    };
+};
+
+const Tile: React.FC<CardProps> = ({ title, body, isActive, createdAt, handleUpdateIdea, isNew, deleteIdea }) => {
+    const { htmlElRef: titleRef, setFocus: setTitleFocus } = useFocus();
+    const [cardTitle, setCardTitle] = React.useState(title);
+    const [cardBody, setCardBody] = React.useState(body);
+    React.useEffect(() => {
+        if (isNew) {
+            setTitleFocus();
+        }
+    }, [isNew]);
     return (
         <CardWrapper>
-            <CardTitle>{title}</CardTitle>
-            <CardBody>{body}</CardBody>
+            <CardTitle
+                value={cardTitle}
+                ref={titleRef}
+                onChange={e => setCardTitle(e.target.value)}
+                onBlur={handleUpdateIdea({
+                    title: cardTitle,
+                })}
+            />
+            <CardBody
+                value={cardBody}
+                onChange={e => setCardBody(e.target.value)}
+                onBlur={handleUpdateIdea({
+                    body: cardBody,
+                })}
+            />
             <CardFooter>{createdAt}</CardFooter>
+            {isActive && <Button onClick={deleteIdea}>Reset</Button>}
         </CardWrapper>
     );
 };

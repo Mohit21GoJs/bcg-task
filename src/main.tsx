@@ -1,6 +1,6 @@
 import * as React from 'react';
-import * as orderBy from 'lodash/orderBy';
-import styled from '@emotion/styled';
+import orderBy from 'lodash/orderBy';
+import styled from 'styled-components';
 import { getIdeas, getNewIdea, resetIdeas, updateIdea, deleteIdea } from './helpers/api';
 import Tile from './components/Tile';
 import Button from './components/Button';

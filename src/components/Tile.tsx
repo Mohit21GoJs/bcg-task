@@ -1,6 +1,6 @@
 import * as React from 'react';
+import styled from 'styled-components';
 import { string, bool, func } from 'prop-types';
-import styled from '@emotion/styled';
 import Button from './Button';
 import { useFocus } from '../helpers/hooks';
 
@@ -18,7 +18,7 @@ const CardWrapper = styled.div`
     border-radius: 5px;
 `;
 
-const CardTitle = styled.input`
+const CardTitle = styled.div`
     font-size: 24px;
     font-weight: bold;
     text-align: center;
@@ -28,7 +28,7 @@ const CardTitle = styled.input`
     }
 `;
 
-const CardBody = styled.textarea`
+const CardBody = styled.div`
     width: 100%;
     min-height: 50px;
 `;
@@ -85,7 +85,6 @@ const Tile: React.FC<CardProps> = ({ title, body, createdAt, handleUpdateIdea, i
                     }
                 />
             </CardBody>
-
             <CardFooter>{createdAt}</CardFooter>
             {isDeleteShown && <Button onClick={() => deleteIdea(id)}>x</Button>}
         </CardWrapper>

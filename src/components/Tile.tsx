@@ -47,7 +47,8 @@ const CardBody = styled.div`
     textarea {
         border: hidden;
         width: 90%;
-        height: 70px;
+        height: 50px;
+        resize: none;
         &:focus {
             border-style: solid;
             border-color: #d3d3d3;

@@ -3,10 +3,9 @@ import styled from 'styled-components';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Select from 'react-select';
-import { Idea, getIdeas, getNewIdea, resetIdeas, updateIdea, deleteIdea } from './helpers/api';
 import Tile from './components/Tile';
 import Button from './components/Button';
-import ErrorBoundary from './components/ErrorBoundary';
+import { useIdeaContext } from './contexts/idea';
 
 // Configure toasts
 toast.configure({
@@ -46,55 +45,37 @@ const Main: React.FC = () => {
         { value: 'title', label: 'Title' },
         { value: 'createdAt', label: 'Created Date' },
     ];
-    const [ideas, setIdeas] = React.useState<Idea[]>([]);
+    const { ideas, addNewIdea, updateIdeaById, deleteIdeaById } = useIdeaContext();
     const [displayIdeas, setDisplayIdeas] = React.useState(ideas);
     const [activeIdea, setActiveIdea] = React.useState('');
     const [isAddNew, setIsAddNew] = React.useState(false);
     const [sortOption, setSortOption] = React.useState('');
-    async function fetchAndSetIdeas(): Promise<void> {
-        const ideas = await getIdeas();
-        setIdeas(ideas);
-    }
 
     const handleAddNewIdea = React.useCallback(async () => {
-        const idea = await getNewIdea();
+        const idea = await addNewIdea();
         setActiveIdea(idea.id);
         setIsAddNew(true);
-        const newIdeas = [...ideas, ...[idea]];
-        setIdeas(newIdeas as Idea[]);
-    }, [ideas, getNewIdea, setActiveIdea, setIsAddNew]);
-
-    const handleResetIdeas = React.useCallback(async () => {
-        await resetIdeas();
-        toast.success('Ideas Resetted');
-        fetchAndSetIdeas();
-    }, []);
+    }, [addNewIdea, setActiveIdea, setIsAddNew]);
 
     const handleUpdateIdea = React.useCallback(
         async (id, payload) => {
+            await updateIdeaById(id, payload);
             setActiveIdea(id);
-            const ideaIndex = ideas.findIndex(idea => idea.id === id);
-            const idea = await updateIdea(id, payload);
             toast.success('Idea Updated');
-            const newIdeas = [...ideas];
-            newIdeas.splice(ideaIndex, 1, idea);
-            setIdeas(newIdeas);
         },
-        [ideas, setActiveIdea, updateIdea, fetchAndSetIdeas],
+        [setActiveIdea, updateIdeaById],
     );
 
     const handleDeleteIdea = React.useCallback(
         async id => {
+            await deleteIdeaById(id);
             setActiveIdea(id);
-            await deleteIdea(id);
             toast.success('Idea Deleted');
-            setIdeas(ideas => ideas.filter(idea => idea.id !== id));
         },
-        [activeIdea, deleteIdea, fetchAndSetIdeas],
+        [deleteIdeaById, setActiveIdea],
     );
 
     React.useEffect(() => {
-        console.log(sortOption);
         if (sortOption) {
             const sortedIdeas = [...ideas];
             switch (sortOption) {
@@ -127,45 +108,35 @@ const Main: React.FC = () => {
         }
     }, [ideas, sortOption]);
 
-    React.useEffect(() => {
-        fetchAndSetIdeas();
-    }, []);
-
     return (
-        <ErrorBoundary>
-            <Layout>
-                <Select
-                    className="sort-select"
-                    options={selectOptions}
+        <Layout>
+            <Select
+                className="sort-select"
+                options={selectOptions}
+                onChange={selectedOption => {
                     // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
                     // @ts-ignore
-                    value={sortOption}
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-                    // @ts-ignore
-                    onChange={selectedOption => setSortOption(selectedOption.value)}
-                />
+                    setSortOption(selectedOption.value);
+                }}
+            />
 
-                <IdeaContainer>
-                    {displayIdeas.map(idea => (
-                        <Tile
-                            key={idea.id}
-                            resetAddNew={() => setIsAddNew(false)}
-                            deleteIdea={handleDeleteIdea}
-                            handleUpdateIdea={handleUpdateIdea}
-                            isNew={isAddNew && idea.id === activeIdea}
-                            isActive={idea.id === activeIdea}
-                            {...idea}
-                        />
-                    ))}
-                </IdeaContainer>
-                <Button className="add-new" onClick={handleAddNewIdea}>
-                    Add New
-                </Button>
-                <Button className="reset" onClick={handleResetIdeas}>
-                    Reset
-                </Button>
-            </Layout>
-        </ErrorBoundary>
+            <IdeaContainer>
+                {displayIdeas.map(idea => (
+                    <Tile
+                        key={idea.id}
+                        resetAddNew={() => setIsAddNew(false)}
+                        deleteIdea={handleDeleteIdea}
+                        handleUpdateIdea={handleUpdateIdea}
+                        isNew={isAddNew && idea.id === activeIdea}
+                        isActive={idea.id === activeIdea}
+                        {...idea}
+                    />
+                ))}
+            </IdeaContainer>
+            <Button className="add-new" onClick={handleAddNewIdea}>
+                Add New
+            </Button>
+        </Layout>
     );
 };
 

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as orderBy from 'lodash/orderBy';
 import styled from '@emotion/styled';
 import { getIdeas, getNewIdea, resetIdeas, updateIdea, deleteIdea } from './helpers/api';
 import Tile from './components/Tile';
@@ -27,8 +28,10 @@ const Layout = styled.div`
 `;
 const Main: React.FC = () => {
     const [ideas, setIdeas] = React.useState([]);
+    const [displayIdeas, setDisplayIdeas] = React.useState(ideas);
     const [activeIdea, setActiveIdea] = React.useState('');
     const [isAddNew, setIsAddNew] = React.useState(false);
+    const [sortOption, setSortOption] = React.useState('');
     async function fetchAndSetIdeas(): Promise<void> {
         const ideas = await getIdeas();
         setIdeas(ideas);
@@ -47,17 +50,32 @@ const Main: React.FC = () => {
     }, []);
 
     const handleUpdateIdea = React.useCallback(
-        payload => async () => {
-            await updateIdea(activeIdea, payload);
+        async (id, payload) => {
+            setActiveIdea(id);
+            await updateIdea(id, payload);
             fetchAndSetIdeas();
         },
-        [activeIdea],
+        [setActiveIdea, updateIdea, fetchAndSetIdeas],
     );
 
-    const handleDeleteIdea = React.useCallback(async () => {
-        await deleteIdea(activeIdea);
-        fetchAndSetIdeas();
-    }, [activeIdea]);
+    const handleDeleteIdea = React.useCallback(
+        async id => {
+            setActiveIdea(id);
+            await deleteIdea(id);
+            fetchAndSetIdeas();
+        },
+        [activeIdea, deleteIdea, fetchAndSetIdeas],
+    );
+
+    React.useEffect(() => {
+        if (sortOption) {
+            const newIdeas = orderBy(ideas, [sortOption]);
+            debugger;
+            setDisplayIdeas(newIdeas);
+        } else {
+            setDisplayIdeas(ideas);
+        }
+    }, [ideas, sortOption]);
 
     React.useEffect(() => {
         fetchAndSetIdeas();
@@ -65,17 +83,8 @@ const Main: React.FC = () => {
     return (
         <Layout>
             <IdeaContainer>
-                {ideas.map(idea => (
-                    <div
-                        key={idea.id}
-                        onMouseEnter={() => {
-                            setIsAddNew(false);
-                            setActiveIdea(idea.id);
-                        }}
-                        onMouseLeave={() => {
-                            setActiveIdea('');
-                        }}
-                    >
+                {displayIdeas.map(idea => (
+                    <div key={idea.id}>
                         <Tile
                             deleteIdea={handleDeleteIdea}
                             handleUpdateIdea={handleUpdateIdea}
@@ -86,6 +95,11 @@ const Main: React.FC = () => {
                     </div>
                 ))}
             </IdeaContainer>
+            <select onChange={e => setSortOption(e.target.value)}>
+                <option value="">Unsorted</option>
+                <option value="title">Title</option>
+                <option value="createdAt">Created Date</option>
+            </select>
             <Button className="add-new" onClick={handleAddNewIdea}>
                 Add New
             </Button>

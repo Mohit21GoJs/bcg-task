@@ -1,6 +1,8 @@
 import * as React from 'react';
+import { string, bool, func } from 'prop-types';
 import styled from '@emotion/styled';
 import Button from './Button';
+import { useFocus } from '../helpers/hooks';
 
 const CardWrapper = styled.div`
     overflow: hidden;
@@ -21,7 +23,7 @@ const CardTitle = styled.input`
     font-weight: bold;
     text-align: center;
     max-width: 100%;
-    &:focus {
+    & input:focus {
         background: red;
     }
 `;
@@ -38,28 +40,19 @@ const CardFooter = styled.div`
 `;
 
 interface CardProps {
+    id: string;
     title: string;
     body: string;
     createdAt: string;
     isActive: boolean;
     isNew: boolean;
-    handleUpdateIdea: ({}) => any;
-    deleteIdea: ({}) => any;
+    handleUpdateIdea: (id: string, payload: {}) => void;
+    deleteIdea: (id: string) => void;
 }
 
-const useFocus = () => {
-    const htmlElRef = React.useRef(null);
-    const setFocus = () => {
-        htmlElRef.current && htmlElRef.current.focus();
-    };
-    return {
-        htmlElRef,
-        setFocus,
-    };
-};
-
-const Tile: React.FC<CardProps> = ({ title, body, isActive, createdAt, handleUpdateIdea, isNew, deleteIdea }) => {
+const Tile: React.FC<CardProps> = ({ title, body, createdAt, handleUpdateIdea, isNew, deleteIdea, id }) => {
     const { htmlElRef: titleRef, setFocus: setTitleFocus } = useFocus();
+    const [isDeleteShown, setIsDeleteShown] = React.useState(false);
     const [cardTitle, setCardTitle] = React.useState(title);
     const [cardBody, setCardBody] = React.useState(body);
     React.useEffect(() => {
@@ -68,26 +61,54 @@ const Tile: React.FC<CardProps> = ({ title, body, isActive, createdAt, handleUpd
         }
     }, [isNew]);
     return (
-        <CardWrapper>
-            <CardTitle
-                value={cardTitle}
-                ref={titleRef}
-                onChange={e => setCardTitle(e.target.value)}
-                onBlur={handleUpdateIdea({
-                    title: cardTitle,
-                })}
-            />
-            <CardBody
-                value={cardBody}
-                onChange={e => setCardBody(e.target.value)}
-                onBlur={handleUpdateIdea({
-                    body: cardBody,
-                })}
-            />
+        <CardWrapper onMouseEnter={() => setIsDeleteShown(true)} onMouseLeave={() => setIsDeleteShown(false)}>
+            <CardTitle>
+                <input
+                    value={cardTitle}
+                    ref={titleRef}
+                    onChange={e => setCardTitle(e.target.value)}
+                    onBlur={(): void =>
+                        handleUpdateIdea(id, {
+                            title: cardTitle,
+                        })
+                    }
+                />
+            </CardTitle>
+            <CardBody>
+                <textarea
+                    value={cardBody}
+                    onChange={e => setCardBody(e.target.value)}
+                    onBlur={() =>
+                        handleUpdateIdea(id, {
+                            body: cardBody,
+                        })
+                    }
+                />
+            </CardBody>
+
             <CardFooter>{createdAt}</CardFooter>
-            {isActive && <Button onClick={deleteIdea}>Reset</Button>}
+            {isDeleteShown && <Button onClick={() => deleteIdea(id)}>x</Button>}
         </CardWrapper>
     );
+};
+
+Tile.propTypes = {
+    id: string.isRequired,
+    title: string,
+    body: string,
+    createdAt: string,
+    isActive: bool,
+    isNew: bool,
+    handleUpdateIdea: func.isRequired,
+    deleteIdea: func.isRequired,
+};
+
+Tile.defaultProps = {
+    title: '',
+    body: '',
+    createdAt: '',
+    isActive: false,
+    isNew: false,
 };
 
 export default Tile;

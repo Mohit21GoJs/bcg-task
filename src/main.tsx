@@ -52,25 +52,37 @@ const Main: React.FC = () => {
     const [sortOption, setSortOption] = React.useState('');
 
     const handleAddNewIdea = React.useCallback(async () => {
-        const idea = await addNewIdea();
-        setActiveIdea(idea.id);
-        setIsAddNew(true);
+        try {
+            const idea = await addNewIdea();
+            setActiveIdea(idea.id);
+            setIsAddNew(true);
+        } catch (e) {
+            toast.error('Some Error Occured while adding new card');
+        }
     }, [addNewIdea, setActiveIdea, setIsAddNew]);
 
     const handleUpdateIdea = React.useCallback(
         async (id, payload) => {
-            await updateIdeaById(id, payload);
-            setActiveIdea(id);
-            toast.success('Idea Updated');
+            try {
+                await updateIdeaById(id, payload);
+                setActiveIdea(id);
+                toast.success('Idea Updated');
+            } catch (e) {
+                toast.error('Some Error Occured while updating');
+            }
         },
         [setActiveIdea, updateIdeaById],
     );
 
     const handleDeleteIdea = React.useCallback(
         async id => {
-            await deleteIdeaById(id);
-            setActiveIdea(id);
-            toast.success('Idea Deleted');
+            try {
+                await deleteIdeaById(id);
+                setActiveIdea(id);
+                toast.success('Idea Deleted');
+            } catch (e) {
+                toast.error('Some Error Occured while deleting');
+            }
         },
         [deleteIdeaById, setActiveIdea],
     );

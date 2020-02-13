@@ -29,6 +29,7 @@ async function getIdeas(): Promise<Idea[]> {
         }
     } catch (e) {
         console.log('error is', e);
+        throw e;
     }
 }
 
@@ -49,6 +50,7 @@ async function getNewIdea(): Promise<IdeaBaseFields> {
         }
     } catch (e) {
         console.log('error in new idea is', e);
+        throw e;
     }
 }
 
@@ -66,6 +68,7 @@ async function updateIdea(id: string, body: IdeaContent): Promise<{ id: string }
         }
     } catch (e) {
         console.log('error in update is', e);
+        throw e;
     }
 }
 
@@ -79,6 +82,7 @@ async function deleteIdea(id: string): Promise<{ id: string }> {
         }
     } catch (e) {
         console.log('error in update is', e);
+        throw e;
     }
 }
 

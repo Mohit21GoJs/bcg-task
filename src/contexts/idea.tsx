@@ -14,7 +14,7 @@ const updateStore = (datum: Idea[]): void => localStorage.setItem('ideas', JSON.
 const IdeaContext = React.createContext<{
     ideas: Idea[];
     addNewIdea?: () => Promise<IdeaBaseFields>;
-    deleteIdeaById?: (id: string) => void;
+    deleteIdeaById?: (id: string) => Promise<string>;
     updateIdeaById?: (id: string, payload: Idea) => Promise<Idea>;
 }>({
     ideas: [],
@@ -36,10 +36,14 @@ const IdeaContextProvider: React.FC = props => {
     }, []);
     const addNewIdea = React.useCallback(() => {
         return new Promise<IdeaBaseFields>(async (resolve, reject) => {
-            const idea = await getNewIdea();
-            const newIdeas = [...ideas, ...[idea]];
-            setIdeas(newIdeas as Idea[]);
-            resolve(idea);
+            try {
+                const idea = await getNewIdea();
+                const newIdeas = [...ideas, ...[idea]];
+                setIdeas(newIdeas as Idea[]);
+                resolve(idea);
+            } catch (e) {
+                reject(new Error(e));
+            }
         });
     }, [ideas]);
 
@@ -65,12 +69,16 @@ const IdeaContextProvider: React.FC = props => {
     );
 
     const deleteIdeaById = React.useCallback(
-        id => {
-            (async function() {
-                await deleteIdea(id);
-                setIdeas(ideas => ideas.filter(idea => idea.id !== id));
-            })();
-        },
+        id =>
+            new Promise<string>(async (resolve, reject) => {
+                try {
+                    await deleteIdea(id);
+                    setIdeas(ideas => ideas.filter(idea => idea.id !== id));
+                    resolve(id);
+                } catch (e) {
+                    reject(new Error(e));
+                }
+            }),
         [deleteIdea, setIdeas],
     );
 

@@ -40,7 +40,7 @@ const CardWrapper = styled.div`
 const CardTitle = styled.div`
     font-size: 24px;
     font-weight: bold;
-    max-width: 100%;
+    width: 100%;
     .title {
         width: 90%;
         resize: none;

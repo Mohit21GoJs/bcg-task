@@ -25,8 +25,12 @@ const CardWrapper = styled.div`
     }
     .body-read,
     .title-read {
-        text-align: center;
         border: hidden;
+    }
+    .title-read {
+        text-align: center;
+        font-size: 1em;
+        text-overflow: ellipsis;
     }
     &:hover {
         transform: translate(5px, 5px);
@@ -39,7 +43,7 @@ const CardTitle = styled.div`
     max-width: 100%;
     .title {
         width: 90%;
-        font-size: 1em;
+        resize: none;
     }
     .delete {
         cursor: pointer;
@@ -167,10 +171,8 @@ const Tile: React.FC<CardProps> = ({
                 )}
             </CardBody>
             <CardFooter>
-                <div>
-                    {isDeleteShown && <i className="delete fa fa-times-circle fa-3x" onClick={() => deleteIdea(id)} />}
-                </div>
-                <div>{dayjs(createdAt).format('DD/MM/YYYY HH:mm:ss SSS')}</div>
+                <div>{dayjs(createdAt).format('DD/MM/YYYY HH:mm:ss')}</div>
+                <div>{isDeleteShown && <i className="delete fa fa-trash fa-2x" onClick={() => deleteIdea(id)} />}</div>
             </CardFooter>
         </CardWrapper>
     );

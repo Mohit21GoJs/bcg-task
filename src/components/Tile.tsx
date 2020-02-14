@@ -116,7 +116,7 @@ const Tile: React.FC<CardProps> = ({
         setCardBody(body);
     }, [body]);
     return (
-        <CardWrapper onMouseEnter={() => setIsDeleteShown(true)} onMouseLeave={() => setIsDeleteShown(false)}>
+        <CardWrapper onMouseOver={() => setIsDeleteShown(true)} onMouseLeave={() => setIsDeleteShown(false)}>
             <CardTitle>
                 <input
                     className={`${formStates.title === 'edit' ? 'title title-edit' : 'title title-read'}`}

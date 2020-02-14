@@ -16,11 +16,20 @@ const CardWrapper = styled.div`
     box-shadow: 10px 10px 20px #aaaaaa;
     border-radius: 5px;
     textarea:focus,
+    .title-edit,
+    .body-edit {
+        border-style: solid;
+        border-width: 5px;
+        border-color: #d3d3d3;
+        outline: none;
+    }
+    .body-read,
+    .title-read {
+        text-align: center;
+        border: hidden;
+    }
     &:hover {
         transform: translate(5px, 5px);
-    }
-    input:focus {
-        outline: none;
     }
 `;
 
@@ -28,15 +37,9 @@ const CardTitle = styled.div`
     font-size: 24px;
     font-weight: bold;
     max-width: 100%;
-    input {
-        text-align: center;
-        border: hidden;
+    .title {
         width: 90%;
         font-size: 1em;
-        &:focus {
-            border-style: solid;
-            border-color: #d3d3d3;
-        }
     }
     .delete {
         cursor: pointer;
@@ -46,15 +49,10 @@ const CardTitle = styled.div`
 const CardBody = styled.div`
     width: 100%;
     min-height: 50px;
-    textarea {
-        border: hidden;
+    .body {
         width: 90%;
         height: 50px;
         resize: none;
-        &:focus {
-            border-style: solid;
-            border-color: #d3d3d3;
-        }
     }
 `;
 
@@ -117,7 +115,7 @@ const Tile: React.FC<CardProps> = ({
         <CardWrapper onMouseEnter={() => setIsDeleteShown(true)} onMouseLeave={() => setIsDeleteShown(false)}>
             <CardTitle>
                 <input
-                    className="title"
+                    className={`${formStates.title === 'edit' ? 'title title-edit' : 'title title-read'}`}
                     value={cardTitle}
                     ref={titleRef}
                     onFocus={() =>
@@ -143,6 +141,7 @@ const Tile: React.FC<CardProps> = ({
             <CardBody>
                 <textarea
                     value={cardBody}
+                    className={`${formStates.body === 'edit' ? 'body body-edit' : 'body body-read'}`}
                     maxLength={MAXBODYLEN}
                     onFocus={() =>
                         setFormStates(modes => ({

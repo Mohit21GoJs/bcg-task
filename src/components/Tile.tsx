@@ -6,34 +6,44 @@ import { useFocus } from '../helpers/hooks';
 
 const CardWrapper = styled.div`
     overflow: hidden;
-    padding: 0 0 32px;
+    padding: 10px;
     margin: 10px;
     width: 150px;
     height: 150px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05), 0 0px 40px rgba(0, 0, 0, 0.08);
+    box-shadow: 10px 10px 20px #aaaaaa;
     border-radius: 5px;
     textarea:focus,
-    input:focus {
+    .title-edit,
+    .body-edit {
+        border-style: solid;
+        border-width: 5px;
+        border-color: #d3d3d3;
         outline: none;
+    }
+    .body-read,
+    .title-read {
+        border: hidden;
+    }
+    .title-read {
+        text-align: center;
+        font-size: 1em;
+        text-overflow: ellipsis;
+    }
+    &:hover {
+        transform: translate(5px, 5px);
     }
 `;
 
 const CardTitle = styled.div`
     font-size: 24px;
     font-weight: bold;
-    max-width: 100%;
-    input {
-        text-align: center;
-        border: hidden;
+    width: 100%;
+    .title {
         width: 90%;
-        font-size: 1em;
-        &:focus {
-            border-style: solid;
-            border-color: #d3d3d3;
-        }
+        resize: none;
     }
     .delete {
         cursor: pointer;
@@ -43,15 +53,10 @@ const CardTitle = styled.div`
 const CardBody = styled.div`
     width: 100%;
     min-height: 50px;
-    textarea {
-        border: hidden;
+    .body {
         width: 90%;
         height: 50px;
         resize: none;
-        &:focus {
-            border-style: solid;
-            border-color: #d3d3d3;
-        }
     }
 `;
 
@@ -90,6 +95,10 @@ const Tile: React.FC<CardProps> = ({
 }) => {
     const { htmlElRef: titleRef, setFocus: setTitleFocus } = useFocus();
     const [isDeleteShown, setIsDeleteShown] = React.useState(false);
+    const [formStates, setFormStates] = React.useState({
+        title: 'read',
+        body: 'read',
+    });
     const [cardTitle, setCardTitle] = React.useState(title);
     const [cardBody, setCardBody] = React.useState(body);
     const remainingBodyChars = MAXBODYLEN - cardBody.length;
@@ -107,14 +116,24 @@ const Tile: React.FC<CardProps> = ({
         setCardBody(body);
     }, [body]);
     return (
-        <CardWrapper onMouseEnter={() => setIsDeleteShown(true)} onMouseLeave={() => setIsDeleteShown(false)}>
+        <CardWrapper onMouseOver={() => setIsDeleteShown(true)} onMouseLeave={() => setIsDeleteShown(false)}>
             <CardTitle>
                 <input
-                    className="title"
+                    className={`${formStates.title === 'edit' ? 'title title-edit' : 'title title-read'}`}
                     value={cardTitle}
                     ref={titleRef}
+                    onFocus={() =>
+                        setFormStates(modes => ({
+                            ...modes,
+                            title: 'edit',
+                        }))
+                    }
                     onChange={e => setCardTitle(e.target.value)}
                     onBlur={(): void => {
+                        setFormStates(modes => ({
+                            ...modes,
+                            title: 'read',
+                        }));
                         if (title !== cardTitle) {
                             handleUpdateIdea(id, {
                                 title: cardTitle,
@@ -126,9 +145,20 @@ const Tile: React.FC<CardProps> = ({
             <CardBody>
                 <textarea
                     value={cardBody}
+                    className={`${formStates.body === 'edit' ? 'body body-edit' : 'body body-read'}`}
                     maxLength={MAXBODYLEN}
+                    onFocus={() =>
+                        setFormStates(modes => ({
+                            ...modes,
+                            body: 'edit',
+                        }))
+                    }
                     onChange={e => setCardBody(e.target.value)}
                     onBlur={() => {
+                        setFormStates(modes => ({
+                            ...modes,
+                            body: 'read',
+                        }));
                         if (body !== cardBody) {
                             handleUpdateIdea(id, {
                                 body: cardBody,
@@ -136,13 +166,13 @@ const Tile: React.FC<CardProps> = ({
                         }
                     }}
                 />
-                {remainingBodyChars < LIMITFORCOUNTER && <div>Remaining: {remainingBodyChars}</div>}
+                {formStates.body === 'edit' && remainingBodyChars < LIMITFORCOUNTER && (
+                    <div>Remaining: {remainingBodyChars}</div>
+                )}
             </CardBody>
             <CardFooter>
-                <div>
-                    {isDeleteShown && <i className="delete fa fa-times-circle fa-3x" onClick={() => deleteIdea(id)} />}
-                </div>
-                <div>{dayjs(createdAt).format('DD/MM/YYYY HH:mm:ss SSS')}</div>
+                <div>{dayjs(createdAt).format('DD/MM/YYYY HH:mm:ss')}</div>
+                <div>{isDeleteShown && <i className="delete fa fa-trash fa-2x" onClick={() => deleteIdea(id)} />}</div>
             </CardFooter>
         </CardWrapper>
     );

@@ -1,8 +1,6 @@
 import styled from 'styled-components';
 
 const Button = styled.button`
-    display: block;
-    width: 100%;
     padding: 12px 0;
     font-family: inherit;
     font-size: 14px;

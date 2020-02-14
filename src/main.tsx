@@ -11,6 +11,7 @@ import { useIdeaContext } from './contexts/idea';
 toast.configure({
     autoClose: 3000,
     draggable: false,
+    position: toast.POSITION.BOTTOM_RIGHT,
 });
 
 const IdeaContainer = styled.div`
@@ -19,22 +20,32 @@ const IdeaContainer = styled.div`
 `;
 
 const Layout = styled.div`
+    width: 100%;
+`;
+
+const Header = styled.header`
+    display: flex;
+    justify-content: space-between;
+    min-height: 70px;
+    align-items: center;
+    background-color: whitesmoke;
+    margin-bottom: 20px;
+    margin-right: 10px;
+    padding-left: 20px;
+    & .heading {
+        font-style: italic;
+        flex-grow: 1;
+    }
     & .add-new {
-        position: absolute;
-        top: 10px;
-        right: 0;
         background-color: green;
-        max-width: 10vw;
+        flex-grow: 1;
+        width: 50px;
     }
-    & .reset {
-        position: absolute;
-        bottom: 10px;
-        right: 0;
-        background-color: blue;
-        max-width: 10vw;
-    }
-    & .sort-select {
-        width: 20%;
+    & .sort {
+        & .select {
+            width: 60%;
+        }
+        flex-grow: 2;
     }
 `;
 
@@ -122,16 +133,25 @@ const Main: React.FC = () => {
 
     return (
         <Layout>
-            <Select
-                className="sort-select"
-                options={selectOptions}
-                onChange={selectedOption => {
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-                    // @ts-ignore
-                    setSortOption(selectedOption.value);
-                }}
-            />
+            <Header>
+                <h1 className="heading">Ideas Demo App</h1>
+                <div className="sort">
+                    <Select
+                        className="select"
+                        options={selectOptions}
+                        placeholder="Select Sort Type.."
+                        onChange={selectedOption => {
+                            // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+                            // @ts-ignore
+                            setSortOption(selectedOption.value);
+                        }}
+                    />
+                </div>
 
+                <Button className="add-new" onClick={handleAddNewIdea}>
+                    Add New
+                </Button>
+            </Header>
             <IdeaContainer>
                 {displayIdeas.map(idea => (
                     <Tile
@@ -145,9 +165,6 @@ const Main: React.FC = () => {
                     />
                 ))}
             </IdeaContainer>
-            <Button className="add-new" onClick={handleAddNewIdea}>
-                Add New
-            </Button>
         </Layout>
     );
 };

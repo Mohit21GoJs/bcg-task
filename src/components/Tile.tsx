@@ -6,16 +6,19 @@ import { useFocus } from '../helpers/hooks';
 
 const CardWrapper = styled.div`
     overflow: hidden;
-    padding: 0 0 32px;
+    padding: 10px;
     margin: 10px;
     width: 150px;
     height: 150px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05), 0 0px 40px rgba(0, 0, 0, 0.08);
+    box-shadow: 10px 10px 20px #aaaaaa;
     border-radius: 5px;
     textarea:focus,
+    &:hover {
+        transform: translate(5px, 5px);
+    }
     input:focus {
         outline: none;
     }
@@ -90,6 +93,10 @@ const Tile: React.FC<CardProps> = ({
 }) => {
     const { htmlElRef: titleRef, setFocus: setTitleFocus } = useFocus();
     const [isDeleteShown, setIsDeleteShown] = React.useState(false);
+    const [formStates, setFormStates] = React.useState({
+        title: 'read',
+        body: 'read',
+    });
     const [cardTitle, setCardTitle] = React.useState(title);
     const [cardBody, setCardBody] = React.useState(body);
     const remainingBodyChars = MAXBODYLEN - cardBody.length;
@@ -113,8 +120,18 @@ const Tile: React.FC<CardProps> = ({
                     className="title"
                     value={cardTitle}
                     ref={titleRef}
+                    onFocus={() =>
+                        setFormStates(modes => ({
+                            ...modes,
+                            title: 'edit',
+                        }))
+                    }
                     onChange={e => setCardTitle(e.target.value)}
                     onBlur={(): void => {
+                        setFormStates(modes => ({
+                            ...modes,
+                            title: 'read',
+                        }));
                         if (title !== cardTitle) {
                             handleUpdateIdea(id, {
                                 title: cardTitle,
@@ -127,8 +144,18 @@ const Tile: React.FC<CardProps> = ({
                 <textarea
                     value={cardBody}
                     maxLength={MAXBODYLEN}
+                    onFocus={() =>
+                        setFormStates(modes => ({
+                            ...modes,
+                            body: 'edit',
+                        }))
+                    }
                     onChange={e => setCardBody(e.target.value)}
                     onBlur={() => {
+                        setFormStates(modes => ({
+                            ...modes,
+                            body: 'read',
+                        }));
                         if (body !== cardBody) {
                             handleUpdateIdea(id, {
                                 body: cardBody,
@@ -136,7 +163,9 @@ const Tile: React.FC<CardProps> = ({
                         }
                     }}
                 />
-                {remainingBodyChars < LIMITFORCOUNTER && <div>Remaining: {remainingBodyChars}</div>}
+                {formStates.body === 'edit' && remainingBodyChars < LIMITFORCOUNTER && (
+                    <div>Remaining: {remainingBodyChars}</div>
+                )}
             </CardBody>
             <CardFooter>
                 <div>

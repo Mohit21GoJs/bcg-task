@@ -34,13 +34,18 @@ const Header = styled.header`
     padding-left: 20px;
     & .heading {
         font-style: italic;
+        flex-grow: 1;
     }
     & .add-new {
         background-color: green;
-        max-width: 10vw;
+        flex-grow: 1;
+        width: 50px;
     }
-    & .sort-select {
-        width: 20%;
+    & .sort {
+        & .select {
+            width: 60%;
+        }
+        flex-grow: 2;
     }
 `;
 
@@ -130,15 +135,18 @@ const Main: React.FC = () => {
         <Layout>
             <Header>
                 <h1 className="heading">Ideas Demo App</h1>
-                <Select
-                    className="sort-select"
-                    options={selectOptions}
-                    onChange={selectedOption => {
-                        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-                        // @ts-ignore
-                        setSortOption(selectedOption.value);
-                    }}
-                />
+                <div className="sort">
+                    <Select
+                        className="select"
+                        options={selectOptions}
+                        placeholder="Select Sort Type.."
+                        onChange={selectedOption => {
+                            // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+                            // @ts-ignore
+                            setSortOption(selectedOption.value);
+                        }}
+                    />
+                </div>
 
                 <Button className="add-new" onClick={handleAddNewIdea}>
                     Add New

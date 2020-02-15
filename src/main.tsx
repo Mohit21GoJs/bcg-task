@@ -1,12 +1,14 @@
 import * as React from 'react';
-import styled from 'styled-components';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Select from 'react-select';
-import Tile from './components/Tile';
+import Card from './containers/Card';
 import Button from './components/Button';
 import { useIdeaContext } from './contexts/idea';
 import { getDisplayIdeas } from './helpers/util';
+import IdeaContainer from './components/main/IdeaContainer';
+import Header from './components/main/Header';
+import Layout from './components/main/Layout';
 
 // Configure toasts
 toast.configure({
@@ -14,41 +16,6 @@ toast.configure({
     draggable: false,
     position: toast.POSITION.BOTTOM_RIGHT,
 });
-
-const IdeaContainer = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-`;
-
-const Layout = styled.div`
-    width: 100%;
-`;
-
-const Header = styled.header`
-    display: flex;
-    justify-content: space-between;
-    min-height: 70px;
-    align-items: center;
-    background-color: whitesmoke;
-    margin-bottom: 20px;
-    margin-right: 10px;
-    padding-left: 20px;
-    & .heading {
-        font-style: italic;
-        flex-grow: 1;
-    }
-    & .add-new {
-        background-color: green;
-        flex-grow: 1;
-        width: 50px;
-    }
-    & .sort {
-        & .select {
-            width: 60%;
-        }
-        flex-grow: 2;
-    }
-`;
 
 const selectOptions = [
     { value: '', label: 'Default' },
@@ -121,7 +88,7 @@ const Main: React.FC = () => {
             </Header>
             <IdeaContainer>
                 {displayIdeas.map(idea => (
-                    <Tile
+                    <Card
                         key={idea.id}
                         resetAddNew={() => setIsAddNew(false)}
                         deleteIdea={handleDeleteIdea}

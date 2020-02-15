@@ -6,6 +6,7 @@ import Select from 'react-select';
 import Tile from './components/Tile';
 import Button from './components/Button';
 import { useIdeaContext } from './contexts/idea';
+import { getDisplayIdeas } from './helpers/util';
 
 // Configure toasts
 toast.configure({
@@ -49,18 +50,18 @@ const Header = styled.header`
     }
 `;
 
+const selectOptions = [
+    { value: '', label: 'Default' },
+    { value: 'title', label: 'Title' },
+    { value: 'createdAt', label: 'Created Date' },
+];
 // @FIXME: check compatibility of react-select with ts to fix the value issues
 const Main: React.FC = () => {
-    const selectOptions = [
-        { value: '', label: 'Default' },
-        { value: 'title', label: 'Title' },
-        { value: 'createdAt', label: 'Created Date' },
-    ];
     const { ideas, addNewIdea, updateIdeaById, deleteIdeaById } = useIdeaContext();
-    const [displayIdeas, setDisplayIdeas] = React.useState(ideas);
     const [activeIdea, setActiveIdea] = React.useState('');
     const [isAddNew, setIsAddNew] = React.useState(false);
     const [sortOption, setSortOption] = React.useState('');
+    const displayIdeas = React.useMemo(() => getDisplayIdeas(ideas, sortOption), [ideas, sortOption]);
 
     const handleAddNewIdea = React.useCallback(async () => {
         try {
@@ -97,40 +98,6 @@ const Main: React.FC = () => {
         },
         [deleteIdeaById, setActiveIdea],
     );
-
-    React.useEffect(() => {
-        if (sortOption) {
-            const sortedIdeas = [...ideas];
-            switch (sortOption) {
-                case 'title':
-                    sortedIdeas.sort((a, b) => {
-                        const aTitle = a.title || '';
-                        const bTitle = b.title || '';
-                        return aTitle.localeCompare(bTitle);
-                    });
-                    break;
-                case 'createdAt':
-                    // Calculate after comparing to milliseconds
-                    sortedIdeas.sort((a, b) => {
-                        const aDate = new Date(a.createdAt);
-                        const bDate = new Date(b.createdAt);
-                        const createdAtForA = aDate.getTime();
-                        const createdAtForB = bDate.getTime();
-                        if (createdAtForA < createdAtForB) {
-                            return -1;
-                        }
-                        if (createdAtForA > createdAtForB) {
-                            return 1;
-                        }
-                        return 0;
-                    });
-            }
-            setDisplayIdeas(sortedIdeas);
-        } else {
-            setDisplayIdeas(ideas);
-        }
-    }, [ideas, sortOption]);
-
     return (
         <Layout>
             <Header>

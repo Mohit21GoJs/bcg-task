@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 const CardWrapper = styled.div`
+    position: relative;
     overflow: hidden;
     padding: 10px;
     margin: 10px;

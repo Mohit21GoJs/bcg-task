@@ -7,6 +7,7 @@ import CardBody from '../components/card/CardBody';
 import CardTitle from '../components/card/CardTitle';
 import CardFooter from '../components/card/CardFooter';
 import { CardProps, FormStates } from './types/Card';
+import Spinner from '../components/Spinner';
 
 const MAXBODYLEN = 140;
 const LIMITFORCOUNTER = 15;
@@ -30,6 +31,7 @@ const Card: React.FC<CardProps> = ({
         title,
         body,
     });
+    const [isLoading, setIsLoading] = React.useState(false);
     const handleInputChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData(data => ({ ...data, [name]: value }));
@@ -61,51 +63,86 @@ const Card: React.FC<CardProps> = ({
             onMouseOver={(): void => setIsDeleteShown(true)}
             onMouseLeave={(): void => setIsDeleteShown(false)}
         >
-            <CardTitle>
-                <input
-                    name="title"
-                    className={`${formStates.title === 'edit' ? 'title title-edit' : 'title title-read'}`}
-                    value={cardTitle}
-                    ref={titleRef}
-                    onFocus={({ target: { name } }): void => setFormStates(data => ({ ...data, [name]: 'edit' }))}
-                    onChange={handleInputChange}
-                    onBlur={({ target: { name } }): void => {
-                        setFormStates(data => ({ ...data, [name]: 'read' }));
-                        if (title !== cardTitle) {
-                            handleUpdateIdea(id, {
-                                [name]: cardTitle,
-                            });
-                        }
-                    }}
-                />
-            </CardTitle>
-            <CardBody>
-                <textarea
-                    name="body"
-                    value={cardBody}
-                    className={`${formStates.body === 'edit' ? 'body body-edit' : 'body body-read'}`}
-                    maxLength={MAXBODYLEN}
-                    onFocus={({ target: { name } }): void => setFormStates(data => ({ ...data, [name]: 'edit' }))}
-                    onChange={handleInputChange}
-                    onBlur={({ target: { name } }): void => {
-                        setFormStates(data => ({ ...data, [name]: 'read' }));
-                        if (body !== cardBody) {
-                            handleUpdateIdea(id, {
-                                [name]: cardBody,
-                            });
-                        }
-                    }}
-                />
-                {formStates.body === 'edit' && remainingBodyChars < LIMITFORCOUNTER && (
-                    <div>Remaining: {remainingBodyChars}</div>
-                )}
-            </CardBody>
-            <CardFooter>
-                <div>{dayjs(createdAt).format('DD/MM/YYYY HH:mm:ss')}</div>
-                <div>
-                    {isDeleteShown && <i className="delete fa fa-trash fa-2x" onClick={(): void => deleteIdea(id)} />}
-                </div>
-            </CardFooter>
+            {isLoading ? (
+                <Spinner />
+            ) : (
+                <>
+                    <CardTitle>
+                        <input
+                            name="title"
+                            className={`${formStates.title === 'edit' ? 'title title-edit' : 'title title-read'}`}
+                            value={cardTitle}
+                            ref={titleRef}
+                            onFocus={({ target: { name } }): void =>
+                                setFormStates(data => ({ ...data, [name]: 'edit' }))
+                            }
+                            onChange={handleInputChange}
+                            onBlur={async ({ target: { name } }): Promise<void> => {
+                                setFormStates(data => ({ ...data, [name]: 'read' }));
+                                if (title !== cardTitle) {
+                                    try {
+                                        setIsLoading(true);
+                                        await handleUpdateIdea(id, {
+                                            [name]: cardTitle,
+                                        });
+                                    } catch (e) {
+                                        // do nothing for now
+                                    }
+                                    setIsLoading(false);
+                                }
+                            }}
+                        />
+                    </CardTitle>
+                    <CardBody>
+                        <textarea
+                            name="body"
+                            value={cardBody}
+                            className={`${formStates.body === 'edit' ? 'body body-edit' : 'body body-read'}`}
+                            maxLength={MAXBODYLEN}
+                            onFocus={({ target: { name } }): void =>
+                                setFormStates(data => ({ ...data, [name]: 'edit' }))
+                            }
+                            onChange={handleInputChange}
+                            onBlur={async ({ target: { name } }): Promise<void> => {
+                                setFormStates(data => ({ ...data, [name]: 'read' }));
+                                if (body !== cardBody) {
+                                    try {
+                                        setIsLoading(true);
+                                        await handleUpdateIdea(id, {
+                                            [name]: cardBody,
+                                        });
+                                    } catch (e) {
+                                        // do nothing for now
+                                    }
+                                    setIsLoading(false);
+                                }
+                            }}
+                        />
+                        {formStates.body === 'edit' && remainingBodyChars < LIMITFORCOUNTER && (
+                            <div>Remaining: {remainingBodyChars}</div>
+                        )}
+                    </CardBody>
+                    <CardFooter>
+                        <div>{dayjs(createdAt).format('DD/MM/YYYY HH:mm:ss')}</div>
+                        <div>
+                            {isDeleteShown && (
+                                <i
+                                    className="delete fa fa-trash fa-2x"
+                                    onClick={async (): Promise<void> => {
+                                        try {
+                                            setIsLoading(true);
+                                            await deleteIdea(id);
+                                        } catch (e) {
+                                            // do nothing
+                                        }
+                                        setIsLoading(false);
+                                    }}
+                                />
+                            )}
+                        </div>
+                    </CardFooter>
+                </>
+            )}
         </CardWrapper>
     );
 };

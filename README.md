@@ -26,19 +26,13 @@
 -   gzip compression.
 -   webpack bundle minifications.
 -   webpack bundle analyzer(runs at port 8888 on localhost)
+-   Lazy Loading
+-   Code Splitting
 
 ## WIP(Addons)
 
 -   [ ] Function documentation
 
--   [ ] Monitor perf in dev environment
-
--   [ ] Code Splitting
-
--   [ ] Lazy Loading
-
 -   [ ] CDN usage(Not needed as of now)
-
--   [ ] Enhancing designs
 
 -   [ ] Unit tests(automated and logic)

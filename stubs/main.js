@@ -6,7 +6,7 @@ var initialIdeas = _.range(50).map(function(val){
 
 // Get Ideas
 Sandbox.define('/status', 'GET', function(req, res) {
-    res.send({ status: "Ok"});
+    res.send({ status: "OK"});
 });
 
 // Get Ideas

@@ -5,6 +5,7 @@
 [Heroku Link](https://tiles-map.herokuapp.com/)
 
 ## Run Locally
+
 * Run `yarn && yarn start`
 * App will run on `localhost:8080`
 
